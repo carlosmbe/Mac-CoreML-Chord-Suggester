@@ -11,6 +11,10 @@
 		B611A579291F9D7C006E5434 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B611A578291F9D7C006E5434 /* ContentView.swift */; };
 		B611A57B291F9D7E006E5434 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B611A57A291F9D7E006E5434 /* Assets.xcassets */; };
 		B611A57E291F9D7E006E5434 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B611A57D291F9D7E006E5434 /* Preview Assets.xcassets */; };
+		B611A586291F9DB5006E5434 /* MLChordSuggester.mlpackage in Sources */ = {isa = PBXBuildFile; fileRef = B611A585291F9DB5006E5434 /* MLChordSuggester.mlpackage */; };
+		B611A588291F9DEE006E5434 /* dictionaries in Resources */ = {isa = PBXBuildFile; fileRef = B611A587291F9DEE006E5434 /* dictionaries */; };
+		B611A58A291F9E6D006E5434 /* Predcit Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = B611A589291F9E6D006E5434 /* Predcit Models.swift */; };
+		B63953792920DCD700EAA9C3 /* Dictionary Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = B63953782920DCD700EAA9C3 /* Dictionary Models.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -20,6 +24,10 @@
 		B611A57A291F9D7E006E5434 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B611A57D291F9D7E006E5434 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		B611A57F291F9D7E006E5434 /* Mac_Chord_Suggester.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Mac_Chord_Suggester.entitlements; sourceTree = "<group>"; };
+		B611A585291F9DB5006E5434 /* MLChordSuggester.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; path = MLChordSuggester.mlpackage; sourceTree = SOURCE_ROOT; };
+		B611A587291F9DEE006E5434 /* dictionaries */ = {isa = PBXFileReference; lastKnownFileType = folder; path = dictionaries; sourceTree = "<group>"; };
+		B611A589291F9E6D006E5434 /* Predcit Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Predcit Models.swift"; sourceTree = "<group>"; };
+		B63953782920DCD700EAA9C3 /* Dictionary Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dictionary Models.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,6 +62,10 @@
 			children = (
 				B611A576291F9D7C006E5434 /* Mac_Chord_SuggesterApp.swift */,
 				B611A578291F9D7C006E5434 /* ContentView.swift */,
+				B611A589291F9E6D006E5434 /* Predcit Models.swift */,
+				B63953782920DCD700EAA9C3 /* Dictionary Models.swift */,
+				B611A585291F9DB5006E5434 /* MLChordSuggester.mlpackage */,
+				B611A587291F9DEE006E5434 /* dictionaries */,
 				B611A57A291F9D7E006E5434 /* Assets.xcassets */,
 				B611A57F291F9D7E006E5434 /* Mac_Chord_Suggester.entitlements */,
 				B611A57C291F9D7E006E5434 /* Preview Content */,
@@ -127,6 +139,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B611A588291F9DEE006E5434 /* dictionaries in Resources */,
 				B611A57E291F9D7E006E5434 /* Preview Assets.xcassets in Resources */,
 				B611A57B291F9D7E006E5434 /* Assets.xcassets in Resources */,
 			);
@@ -139,8 +152,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B611A586291F9DB5006E5434 /* MLChordSuggester.mlpackage in Sources */,
 				B611A579291F9D7C006E5434 /* ContentView.swift in Sources */,
+				B63953792920DCD700EAA9C3 /* Dictionary Models.swift in Sources */,
 				B611A577291F9D7C006E5434 /* Mac_Chord_SuggesterApp.swift in Sources */,
+				B611A58A291F9E6D006E5434 /* Predcit Models.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
