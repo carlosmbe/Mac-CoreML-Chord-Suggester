@@ -15,6 +15,7 @@
 		B611A588291F9DEE006E5434 /* dictionaries in Resources */ = {isa = PBXBuildFile; fileRef = B611A587291F9DEE006E5434 /* dictionaries */; };
 		B611A58A291F9E6D006E5434 /* Predcit Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = B611A589291F9E6D006E5434 /* Predcit Models.swift */; };
 		B63953792920DCD700EAA9C3 /* Dictionary Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = B63953782920DCD700EAA9C3 /* Dictionary Models.swift */; };
+		B639537C2920E8FE00EAA9C3 /* Midi Stuff.swift in Sources */ = {isa = PBXBuildFile; fileRef = B639537B2920E8FE00EAA9C3 /* Midi Stuff.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +29,7 @@
 		B611A587291F9DEE006E5434 /* dictionaries */ = {isa = PBXFileReference; lastKnownFileType = folder; path = dictionaries; sourceTree = "<group>"; };
 		B611A589291F9E6D006E5434 /* Predcit Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Predcit Models.swift"; sourceTree = "<group>"; };
 		B63953782920DCD700EAA9C3 /* Dictionary Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dictionary Models.swift"; sourceTree = "<group>"; };
+		B639537B2920E8FE00EAA9C3 /* Midi Stuff.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Midi Stuff.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,10 +64,8 @@
 			children = (
 				B611A576291F9D7C006E5434 /* Mac_Chord_SuggesterApp.swift */,
 				B611A578291F9D7C006E5434 /* ContentView.swift */,
-				B611A589291F9E6D006E5434 /* Predcit Models.swift */,
-				B63953782920DCD700EAA9C3 /* Dictionary Models.swift */,
+				B639537A2920E8D900EAA9C3 /* Models */,
 				B611A585291F9DB5006E5434 /* MLChordSuggester.mlpackage */,
-				B611A587291F9DEE006E5434 /* dictionaries */,
 				B611A57A291F9D7E006E5434 /* Assets.xcassets */,
 				B611A57F291F9D7E006E5434 /* Mac_Chord_Suggester.entitlements */,
 				B611A57C291F9D7E006E5434 /* Preview Content */,
@@ -79,6 +79,17 @@
 				B611A57D291F9D7E006E5434 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		B639537A2920E8D900EAA9C3 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				B611A589291F9E6D006E5434 /* Predcit Models.swift */,
+				B63953782920DCD700EAA9C3 /* Dictionary Models.swift */,
+				B639537B2920E8FE00EAA9C3 /* Midi Stuff.swift */,
+				B611A587291F9DEE006E5434 /* dictionaries */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -154,6 +165,7 @@
 			files = (
 				B611A586291F9DB5006E5434 /* MLChordSuggester.mlpackage in Sources */,
 				B611A579291F9D7C006E5434 /* ContentView.swift in Sources */,
+				B639537C2920E8FE00EAA9C3 /* Midi Stuff.swift in Sources */,
 				B63953792920DCD700EAA9C3 /* Dictionary Models.swift in Sources */,
 				B611A577291F9D7C006E5434 /* Mac_Chord_SuggesterApp.swift in Sources */,
 				B611A58A291F9E6D006E5434 /* Predcit Models.swift in Sources */,
