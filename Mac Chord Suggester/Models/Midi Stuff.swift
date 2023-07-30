@@ -4,134 +4,61 @@
 //
 //  Created by Carlos Mbendera on 13/11/2022.
 //
-
-
 import AudioToolbox
-//import Foundation
 
-
-struct ChordNotes{
-    
+struct ChordNotes {
     let name: String
     let containsAccidental: Bool
-
-    var root_name: String
-    var quality_name: String
+    var rootName: String
+    var qualityName: String
         
     init(name: String) {
         self.name = name
-        
-        var containsAccidentalComputed : Bool{
-            let nameArray = Array(name)
-            if nameArray.count > 1 && (nameArray[1] == "#" || nameArray[1] == "b"){
-                return true
-            }else {return false}
-        }
-        
-        self.containsAccidental = containsAccidentalComputed
-        self.root_name = containsAccidental ? String(name.prefix(2)) : String(name.prefix(1))
-        let qualityCount = Array(name).count - (containsAccidental ? 2 : 1)
-        self.quality_name =  containsAccidental ? String(name.suffix(qualityCount)) : String(name.suffix(qualityCount))
-        
+        self.containsAccidental = Array(name)[1] == "#" || Array(name)[1] == "b"
+        self.rootName = containsAccidental ? String(name.prefix(2)) : String(name.prefix(1))
+        let qualityCount = name.count - (containsAccidental ? 2 : 1)
+        self.qualityName = String(name.suffix(qualityCount))
     }
     
-    func getNotes() -> [String]{
-        let root_value = ToNumber[root_name] as! Int
-        
-        let quality_components = ToComponents[quality_name] as! [Int]
-        
-        let absolute_quality_components = quality_components.map{ relative_component in
-            root_value + relative_component
-        }
-        
-        let accidentalToAvoid = root_name.contains("b") ? "#" : "b"
+    func getNotes() -> [String] {
+        let rootValue = ToNumber[rootName] as! Int
+        let qualityComponents = ToComponents[qualityName] as! [Int]
+        let absoluteQualityComponents = qualityComponents.map { rootValue + $0 }
+        let accidentalToAvoid = rootName.contains("b") ? "#" : "b"
+        let baseScale = (rootValue >= 7) ? 3 : 4
 
-        let baseScale = (root_value >= 7) ? 3 : 4;
-
-        let notes = absolute_quality_components.map{component in
+        return absoluteQualityComponents.compactMap { component in
             let suffix = baseScale + (component / NumberOfNotes)
-           
             let noteNameIndex = "\(component % NumberOfNotes)"
             let noteNameArray = ToNote[noteNameIndex] as! [String]
-            
-            var note_name : String {
-                for note in noteNameArray{
-                    if !note.contains(accidentalToAvoid){
-                       // print("Value is \(note)")
-                        return note
-                    }
-                }
-                fatalError("NO Notes with accidental to avoid")
-            }
-              
-          //  print("OG LINe = \(note_name)")
-         
-            
-           return "\(note_name)\(suffix)"
+            let noteName = noteNameArray.first { !$0.contains(accidentalToAvoid) } ?? ""
+            return "\(noteName)\(suffix)"
         }
-        return notes
     }
-    
 }
 
-func covertChordNotesToMidi(notes: [String]) -> [UInt8]{
-    var midiNotes = [UInt8]()
-   // print("STARTING CONVERT")
-    for var note in notes{
-        note.removeLast()
-        let baseNumber = ToNumber[note] as! UInt8
-      //  print(baseNumber + 60)
-        midiNotes.append(baseNumber + 60)
-    }
-
-    return midiNotes
+func convertChordNotesToMidi(notes: [String]) -> [UInt8] {
+    return notes.compactMap { note in
+        var mutableNote = note
+        mutableNote.removeLast()
+        return ToNumber[mutableNote] as? UInt8
+    }.map { $0 + 60 }
 }
 
-func createMusicSequence(chords: [[UInt8]] ) -> MusicSequence {
-    // create the sequence
+func createMusicSequence(chords: [[UInt8]]) -> MusicSequence {
     var musicSequence: MusicSequence?
-    var status = NewMusicSequence(&musicSequence)
-    if status != noErr {
-        print(" bad status \(status) creating sequence")
-    }
+    NewMusicSequence(&musicSequence)
     
-    /*
-    var tempoTrack: MusicTrack?
-    if MusicSequenceGetTempoTrack(musicSequence!, &tempoTrack) != noErr {
-        assert(tempoTrack != nil, "Cannot get tempo track")
-    }
-    //MusicTrackClear(tempoTrack, 0, 1)
-    if MusicTrackNewExtendedTempoEvent(tempoTrack!, 0.0, 128.0) != noErr {
-        print("could not set tempo")
-    }
-    if MusicTrackNewExtendedTempoEvent(tempoTrack!, 4.0, 256.0) != noErr {
-        print("could not set tempo")
-    }
-    
-    */
-    // add a track
     var track: MusicTrack?
-    status = MusicSequenceNewTrack(musicSequence!, &track)
-    if status != noErr {
-        print("error creating track \(status)")
-    }
+    MusicSequenceNewTrack(musicSequence!, &track)
     
-  
-    
-    // now make some notes and put them on the track
     var beat: MusicTimeStamp = 0.0
-   
-    for batch in 0..<chords.count {
-        for note: UInt8 in chords[batch] {
-            var mess = MIDINoteMessage(channel: 0,
-                                       note: note,
-                                       velocity: 64,
-                                       releaseVelocity: 0,
-                                       duration: 1.0 )
-            status = MusicTrackNewMIDINoteEvent(track!, beat, &mess)
-            if status != noErr {    print("creating new midi note event \(status)") }
-            
-        }// beat changes after this
+    
+    for chord in chords {
+        for note in chord {
+            var mess = MIDINoteMessage(channel: 0, note: note, velocity: 64, releaseVelocity: 0, duration: 1.0)
+            MusicTrackNewMIDINoteEvent(track!, beat, &mess)
+        }
         beat += 1
     }
     
@@ -140,10 +67,9 @@ func createMusicSequence(chords: [[UInt8]] ) -> MusicSequence {
     return musicSequence!
 }
 
-func createPlayer(chords : [[UInt8]]){
-    var musicPlayer : MusicPlayer? = nil
-    var player = NewMusicPlayer(&musicPlayer)
-
-    player = MusicPlayerSetSequence(musicPlayer!, createMusicSequence(chords: chords))
-    player = MusicPlayerStart(musicPlayer!)
+func createPlayer(chords: [[UInt8]]) {
+    var musicPlayer: MusicPlayer? = nil
+    NewMusicPlayer(&musicPlayer)
+    MusicPlayerSetSequence(musicPlayer!, createMusicSequence(chords: chords))
+    MusicPlayerStart(musicPlayer!)
 }
