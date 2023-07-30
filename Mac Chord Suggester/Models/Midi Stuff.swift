@@ -7,7 +7,7 @@
 
 
 import AudioToolbox
-import Foundation
+//import Foundation
 
 
 struct ChordNotes{
@@ -23,7 +23,7 @@ struct ChordNotes{
         
         var containsAccidentalComputed : Bool{
             let nameArray = Array(name)
-            if nameArray.count > 2 && (nameArray[1] == "#" || nameArray[1] == "b"){
+            if nameArray.count > 1 && (nameArray[1] == "#" || nameArray[1] == "b"){
                 return true
             }else {return false}
         }
@@ -37,6 +37,7 @@ struct ChordNotes{
     
     func getNotes() -> [String]{
         let root_value = ToNumber[root_name] as! Int
+        
         let quality_components = ToComponents[quality_name] as! [Int]
         
         let absolute_quality_components = quality_components.map{ relative_component in
@@ -75,10 +76,11 @@ struct ChordNotes{
 
 func covertChordNotesToMidi(notes: [String]) -> [UInt8]{
     var midiNotes = [UInt8]()
+   // print("STARTING CONVERT")
     for var note in notes{
         note.removeLast()
         let baseNumber = ToNumber[note] as! UInt8
-        print(baseNumber + 60)
+      //  print(baseNumber + 60)
         midiNotes.append(baseNumber + 60)
     }
 
@@ -93,6 +95,7 @@ func createMusicSequence(chords: [[UInt8]] ) -> MusicSequence {
         print(" bad status \(status) creating sequence")
     }
     
+    /*
     var tempoTrack: MusicTrack?
     if MusicSequenceGetTempoTrack(musicSequence!, &tempoTrack) != noErr {
         assert(tempoTrack != nil, "Cannot get tempo track")
@@ -105,7 +108,7 @@ func createMusicSequence(chords: [[UInt8]] ) -> MusicSequence {
         print("could not set tempo")
     }
     
-    
+    */
     // add a track
     var track: MusicTrack?
     status = MusicSequenceNewTrack(musicSequence!, &track)

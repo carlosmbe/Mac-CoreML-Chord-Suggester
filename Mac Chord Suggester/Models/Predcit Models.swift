@@ -7,43 +7,42 @@
 import CoreML
 import Foundation
 
-struct ChordProbablity {
+struct ChordProbablity: Hashable {
     var name: String
     var probability : Float
 }
 
 
-func predict(for chords: [Float32]) -> String{
+func predict(for chords: [Float32]) -> [ChordProbablity]{
     do{
         let config = MLModelConfiguration()
         let model = try MLChordSuggester(configuration: config)
-
+        
         /*
          This Code Works Perfectly fine and I wrote it from Scratch but the next one using the function is short,lean and mean
-         
-         //Use category numbers for chords, like from 0 to 804 in the JSON
-         var inputArray = [[Float32]]()
-         
-         inputArray.append(chords)
-         
-         var mlArray = try! MLMultiArray(shape: [1,20], dataType: .float32)
-         
-         for batchIndex in 0..<1 {
-         for chordIndex in 0..<inputArray[batchIndex].count {
-         print(batchIndex)
-         mlArray[[batchIndex, chordIndex] as [NSNumber]] = (inputArray[batchIndex][chordIndex]) as NSNumber
-         }
-         }
          */
+        //Use category numbers for chords, like from 0 to 804 in the JSON
+        var inputArray = [[Float32]]()
         
-        var alternativeInputArray = convertToMLArray(chords)
-    
-        let modelInput = MLChordSuggesterInput(embedding_13_input: alternativeInputArray)
-       
+        inputArray.append(chords)
+        
+        var mlArray = try! MLMultiArray(shape: [1,20], dataType: .float32)
+        
+        for batchIndex in 0..<1 {
+            for chordIndex in 0..<inputArray[batchIndex].count {
+                mlArray[[batchIndex, chordIndex] as [NSNumber]] = (inputArray[batchIndex][chordIndex]) as NSNumber
+            }
+        }
+        
+        
+        // var alternativeInputArray = convertToMLArray(chords)
+        
+        let modelInput = MLChordSuggesterInput(embedding_13_input: mlArray)
+        
         guard let modelOutput = try? model.prediction(input: modelInput) else {
             fatalError("Unexpected runtime error with predict output.")
         }
-    
+        
         return convertPredictToChords(for: modelOutput)
         
     }catch{
@@ -53,22 +52,23 @@ func predict(for chords: [Float32]) -> String{
     fatalError("Prediction Failed")
 }
 
+
+
 func convertToMLArray(_ input: [Float32]) -> MLMultiArray {
-
     let mlArray = try? MLMultiArray(shape: [1,20], dataType: MLMultiArrayDataType.float32)
-
+    
     for (index, element) in input.enumerated() {
-            mlArray![index] = NSNumber(value: Double(element))
-        }
-
-       return mlArray!
-   }
-
-
+        mlArray![index] = NSNumber(value: Double(element))
+    }
+    
+    return mlArray!
+}
 
 
-func convertPredictToChords(for modelOutput : MLChordSuggesterOutput) -> String{
- 
+
+
+func convertPredictToChords(for modelOutput : MLChordSuggesterOutput) -> [ChordProbablity]{
+    
     var numberToCategory = [String : Any]()
     
     var probabilitiesOutputFloatArray = [Float]()
@@ -125,14 +125,15 @@ func convertPredictToChords(for modelOutput : MLChordSuggesterOutput) -> String{
     
     //idk if this slices proper like :   chordProbabilities = chordProbabilities.slice(0,Constants.SuggestedChordNumber);
     let slice = chordProbs.prefix(7)
-    
+    var outputArray = [ChordProbablity]()
     //Test Output
-    var chordOutput = ""
+    // var chordOutput = ""
     for i in slice{
-        chordOutput = "\(chordOutput) \(i.name) = %\(i.probability * 100) \n"
+        outputArray.append(i)
+        //chordOutput = "\(chordOutput) \(i.name) = %\(i.probability * 100) \n"
     }
     
-    return chordOutput
+    return outputArray
     
 }
 

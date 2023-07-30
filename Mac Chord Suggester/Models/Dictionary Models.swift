@@ -11,9 +11,11 @@ public let NumberOfNotes = 12
 public let SequenceLength = 20
 public let SuggestedChordNumber = 7
 
+public let categoryTonumber = getChordKeys()
 public let ToComponents = getQualityToComponents()
 public let ToNumber = getNoteToValue()
 public let ToNote = getValueToNote()
+public let ToChord = getNumberToCategory()
 
 func getValueToNote() -> [String: Any]{
     
@@ -32,6 +34,25 @@ func getValueToNote() -> [String: Any]{
     } else { print("Invalid filename/path.") }
     
     return valueToNote
+}
+
+func getNumberToCategory() -> [String: Any]{
+    
+    var numberToCategory = [String : Any]()
+    
+    if let path = Bundle.main.path(forResource: "number_to_category", ofType: "json", inDirectory: "dictionaries") {
+        
+        do {
+            let data = try Data(contentsOf: URL(fileURLWithPath: path))
+            let object = try JSONSerialization.jsonObject(with: data) as? [String : Any]
+            numberToCategory = object!
+            
+        } catch let error {
+            print("parse error: \(error.localizedDescription)")
+        }
+    } else { print("Invalid filename/path.") }
+    
+    return numberToCategory
 }
 
 func getChordKeys() -> [String: Any]{

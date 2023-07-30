@@ -7,93 +7,175 @@
 
 import SwiftUI
 
-
-
-
-
 struct ContentView: View {
     
-    @State private var midiChords = [[UInt8]]()
     @State private var chords = [Float32]()
-    @State private var chordsString = ""
-    @State private var prediction = ""
-  
-    @State private var selectedChord = "CM7"
+    @State private var chordsNames = [String]()
+    @State private var midiChords = [[UInt8]]()
     
+    @State private var predictionArray = [ChordProbablity]()
+    
+    @State private var selectedChord = "C"
     @State private var selectedRoot = "C"
-    @State private var selectedQuality = "M7"
-
-    private let roots = ["C","Db","D","Eb","E","F","F#","G","Ab","A","Bb","B"]
-    private let qualities = getQualities().sorted()
+    @State private var selectedQuality = ""
     
-    private let categoryTonumber = getChordKeys()
+    private let roots = ["C","Db","D","Eb","E","F","F#","G","Ab","A","Bb","B"]
+    private var qualities = getQualities().sorted()
+    
+    func test(){
+        for _ in 0...17{
+            chords.append(Float32.random(in: 1...800))
+            print(chords.count)
+            predictionArray = predict(for: chords)
+        }
+        chords.removeAll()
+    }
     
     var body: some View {
         
         VStack {
+            Button("Test", action: test)
             
             HStack {
                 Picker("Pick Root", selection: $selectedRoot){
                     ForEach(roots, id:\.self){ Text($0) }
                 }
-                
                 Picker("Pick Quality", selection: $selectedQuality){
                     ForEach(qualities, id:\.self){ Text($0) }
                 }
-                
             }//HStack Ends Here
             
             HStack {
                 Button("Add Chord"){
-                    
-                    let chordNotesType = ChordNotes(name: selectedChord)
-                    let rawNotes = chordNotesType.getNotes()
-                    let midiNotes = covertChordNotesToMidi(notes: rawNotes)
-                    midiChords.append(midiNotes)
-                    
-                    selectedChord = "\(selectedRoot)\(selectedQuality)"
-                    print(selectedChord)
-                    chords.append(categoryTonumber[selectedChord] as! Float32)
-                    chordsString = "\(chordsString)  \(selectedChord),"
-                    
-                    
+                    let name = "\(selectedRoot)\(selectedQuality)"
+                    addChord(name: name)
                 }.padding()
                 
                 Button("Clear List"){
-                    midiChords.removeAll()
-                    chords.removeAll()
-                    chordsString = ""
-                    prediction = ""
+                    withAnimation{
+                        chords.removeAll()
+                        chordsNames.removeAll()
+                        midiChords.removeAll()
+                        predictionArray.removeAll()
+                    }
                 }.padding()
-            }
-            VStack{
-                Text("Current Progression : ").font(.headline)
                 
-                Text(chordsString).bold().padding([.bottom, .top])
+            }//HStack Ends Here
+            if !chordsNames.isEmpty{
+                VStack{
+                    Text("Current Progression : ").font(.headline)
+                    
+                    HStack{
+                        ForEach(chordsNames.indices, id: \.self){
+                            chordProgressionItem(item: self.chordsNames[$0])
+                        }
+                    }
+                    
+                    Button("Play"){
+                        if !midiChords.isEmpty{ createPlayer(chords: midiChords) }
+                    }
+                    .padding([.bottom, .top])
+                    
+                }//VStack Ends Here
                 
-                Button("Play"){
-                    if !midiChords.isEmpty{ createPlayer(chords: midiChords) }
-                }
+                Text("The Likely Chords")
                 
-            }
-          
-            Text("The Likely Chords Are \n \(prediction)")
+                HStack{
+                    ForEach(predictionArray, id: \.self) { chord in
+                        VStack{
+                            suggestedChord(chord: chord)
+                            Button{
+                                addChord(name: "\(chord.name)")
+                            }label: {
+                                Image(systemName: "plus.circle")
+                            }
+                        }
+                    }
+                }//HSTack ends here
+            }//If Ends here
             
+
         }
         .onChange(of: chords, perform: { newValue in
             if !newValue.isEmpty {
-                print("Not Empty")
-                prediction = predict(for: chords)
+                    predictionArray = predict(for: chords)
             }
         })
+        
         .padding()
-        .frame(width: 750, height: 500)
+        .frame(width: 850, height: 500)
+        
+    }//Main VStack Ends Here
+    
+    func addChord(name: String){
+        if chords.count < 20{
+            withAnimation{
+                chords.append(categoryTonumber[name] as! Float32)
+                chordsNames.append(name)
+                // chordsString = "\(chordsString)  \(name),"
+                let chordNotesType = ChordNotes(name: name)
+                let rawNotes = chordNotesType.getNotes()
+                let midiNotes = covertChordNotesToMidi(notes: rawNotes)
+                midiChords.append(midiNotes)
+            }
+        }
     }
-    
-    
-    
 }
 
+
+
+struct suggestedChord : View{
+    
+    let chord : ChordProbablity
+    
+    var body: some View{
+        VStack{
+            Text(chord.name)
+                .font(.headline)
+            
+            Text("% \(Int(chord.probability*100))")
+                .font(.headline)
+            
+            Button(){
+                let chordNotesType = ChordNotes(name: chord.name)
+                let rawNotes = chordNotesType.getNotes()
+                let midiNotes = covertChordNotesToMidi(notes: rawNotes)
+                var midiChords = [[UInt8]]()
+                midiChords.append(midiNotes)
+                createPlayer(chords: midiChords)
+            }label: {
+                Image(systemName: "play.circle")
+            }
+        }
+    }
+}
+
+struct chordProgressionItem : View{
+    
+    let item : String
+    
+    var body : some View{
+        VStack{
+            Text(item)
+                .font(.headline)
+                .bold()
+            
+            Button{
+                let chordNotesType = ChordNotes(name: item)
+                let rawNotes = chordNotesType.getNotes()
+                let midiNotes = covertChordNotesToMidi(notes: rawNotes)
+                var midiChords = [[UInt8]]()
+                midiChords.append(midiNotes)
+                createPlayer(chords: midiChords)
+            }label: {
+                Image(systemName: "play.circle")
+            }
+        }
+        
+        
+    }
+    
+}
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
