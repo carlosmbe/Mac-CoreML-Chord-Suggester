@@ -1,0 +1,15 @@
+{
+  "Outputs" : {
+    "Identity" : {
+      "MLFeatureShortDescription" : "--"
+    }
+  },
+  "Inputs" : {
+    "embedding_13_input" : {
+      "MLFeatureShortDescription" : "--"
+    }
+  },
+  "TrainingInputs" : {
+
+  }
+}

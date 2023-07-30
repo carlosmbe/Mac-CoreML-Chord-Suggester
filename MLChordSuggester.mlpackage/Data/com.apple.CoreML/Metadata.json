@@ -1,0 +1,6 @@
+{
+  "MLModelVersionStringKey" : "--",
+  "MLModelDescriptionKey" : "ChordSuggester is a computer-aided musical composition system. Given a set of input chors, it suggest the next one. It has been trained using an LSTM Neural Network",
+  "MLModelAuthorKey" : "Juan Luis García López",
+  "MLModelLicenseKey" : "--"
+}
